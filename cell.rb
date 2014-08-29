@@ -4,7 +4,6 @@ class Cell
   def initialize(row, col)
     @row = row
     @col = col
-    @covered = true
     @mine = {status: false, mine: nil}
     @cleared = false
   end

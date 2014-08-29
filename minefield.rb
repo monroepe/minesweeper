@@ -40,7 +40,7 @@ class Minefield
 
   # Return true if the cell been uncovered, false otherwise.
   def cell_cleared?(row, col)
-    false
+    self.field[row][col].cleared == true
   end
 
   # Uncover the given cell. If there are no adjacent mines to this cell
@@ -79,8 +79,9 @@ class Minefield
 
   # Returns true if the given cell contains a mine, false otherwise.
   def contains_mine?(row, col)
-    ((@field[row].col == col) && (@field[row].mine == true))
+    self.field[row][col].mine[:status] == true
   end
 end
 
 test = Minefield.new(20, 20, 50)
+binding.pry
