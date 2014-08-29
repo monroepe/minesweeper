@@ -42,17 +42,6 @@ class Minefield
     @field[row][col].cleared == true
   end
 
-  def uncover_adjacents(row, col)
-    @field[row - 1][col].clear
-    @field[row - 1][col - 1].clear
-    @field[row - 1][col + 1].clear
-    @field[row][col - 1].clear
-    @field[row][col + 1].clear
-    @field[row + 1][col].clear
-    @field[row + 1][col - 1].clear
-    @field[row + 1][col + 1].clear
-  end
-
   # Uncover the given cell. If there are no adjacent mines to this cell
   # it should also clear any adjacent cells as well. This is the action
   # when the player clicks on the cell.
@@ -102,7 +91,7 @@ class Minefield
     @field.each do |row|
       y = 0
       row.each do |col|
-        if contains_mine?(x, y)
+        if !contains_mine?(x, y)
           if @field[x][y].cleared == false
             return false
           end
