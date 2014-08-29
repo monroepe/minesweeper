@@ -8,10 +8,6 @@ class Cell
     @cleared = false
   end
 
-  def uncover
-    @covered = false
-  end
-
   def set_mine
     @mine[:exists] = true
   end

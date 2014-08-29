@@ -42,18 +42,37 @@ class Minefield
     @field[row][col].cleared == true
   end
 
+  def uncover_adjacents(row, col)
+    @field[row - 1][col].clear
+    @field[row - 1][col - 1].clear
+    @field[row - 1][col + 1].clear
+    @field[row][col - 1].clear
+    @field[row][col + 1].clear
+    @field[row + 1][col].clear
+    @field[row + 1][col - 1].clear
+    @field[row + 1][col + 1].clear
+  end
+
   # Uncover the given cell. If there are no adjacent mines to this cell
   # it should also clear any adjacent cells as well. This is the action
   # when the player clicks on the cell.
   def clear(row, col)
-    @field[row][col].clear
-
-    if contains_mine?(row, col)
-      @field[row][col].mine[:detonated].detonate
-    else
-      #clear and
-      #check adjacent cells
-
+    if within_field?(row, col) && !cell_cleared?(row, col)
+      @field[row][col].clear
+      if contains_mine?(row, col)
+        @field[row][col].detonate
+      else
+        if adjacent_mines(row, col) == 0
+          clear(row - 1, col - 1)
+          clear(row - 1, col)
+          clear(row - 1, col + 1)
+          clear(row, col - 1)
+          clear(row, col + 1)
+          clear(row + 1, col - 1)
+          clear(row + 1, col)
+          clear(row + 1, col + 1)
+        end
+      end
     end
   end
 
@@ -95,14 +114,42 @@ class Minefield
     true
   end
 
+  #checks to make sure cell is within range
+  def within_field?(row, col)
+    (row >= 0 && row < @row_count) &&
+      (col >= 0 && col < @column_count)
+  end
 
   # Returns the number of mines that are surrounding this cell (maximum of 8).
   def adjacent_mines(row, col)
-    #counter = 0
-    #if contains_mine?(row - 1, col)
-    #count += 1
-    #etc
-    0
+    count = 0
+    if within_field?(row, col)
+      if within_field?(row - 1, col) && contains_mine?(row - 1, col)
+        count += 1
+      end
+      if within_field?(row - 1, col - 1) && contains_mine?(row - 1, col - 1)
+        count += 1
+      end
+      if within_field?(row - 1, col + 1) && contains_mine?(row -1, col + 1)
+        count += 1
+      end
+      if within_field?(row, col - 1) && contains_mine?(row, col - 1)
+        count += 1
+      end
+      if within_field?(row, col + 1) && contains_mine?(row, col + 1)
+        count += 1
+      end
+      if within_field?(row + 1, col) && contains_mine?(row + 1, col)
+        count += 1
+      end
+      if within_field?(row + 1, col - 1) && contains_mine?(row + 1, col - 1)
+        count += 1
+      end
+      if within_field?(row + 1, col + 1) && contains_mine?(row + 1, col + 1)
+        count += 1
+      end
+    end
+    count
   end
 
   # Returns true if the given cell contains a mine, false otherwise.
@@ -111,5 +158,5 @@ class Minefield
   end
 end
 
-test = Minefield.new(20, 20, 50)
-binding.pry
+# test = Minefield.new(3, 3, 5)
+# binding.pry
