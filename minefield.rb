@@ -1,5 +1,4 @@
 require_relative 'cell'
-require_relative 'mine'
 require 'pry'
 
 class Minefield
@@ -47,8 +46,10 @@ class Minefield
   # it should also clear any adjacent cells as well. This is the action
   # when the player clicks on the cell.
   def clear(row, col)
+    @field[row][col].clear
+
     if contains_mine?(row, col)
-      #detonate
+      @field[row][col].mine[:detonated].detonate
     else
       #clear and
       #check adjacent cells
@@ -59,14 +60,18 @@ class Minefield
   # Check if any cells have been uncovered that also contained a mine. This is
   # the condition used to see if the player has lost the game.
   def any_mines_detonated?
+    x = 0
     @field.each do |row|
+      y = 0
       row.each do |col|
-        if contains_mine?(row, col)
-          if @field[row][col].mine[:detonated] == true
+        if contains_mine?(x, y)
+          if @field[x][y].mine[:detonated] == true
             return true
           end
         end
+        y += 1
       end
+      x += 1
     end
     false
   end
@@ -74,17 +79,22 @@ class Minefield
   # Check if all cells that don't have mines have been uncovered. This is the
   # condition used to see if the player has won the game.
   def all_cells_cleared?
+    x = 0
     @field.each do |row|
+      y = 0
       row.each do |col|
-        if !contains_mine?(row, col)
-          if @field[row][col].cleared == false
+        if contains_mine?(x, y)
+          if @field[x][y].cleared == false
             return false
           end
         end
+        y += 1
       end
+      x += 1
     end
     true
   end
+
 
   # Returns the number of mines that are surrounding this cell (maximum of 8).
   def adjacent_mines(row, col)

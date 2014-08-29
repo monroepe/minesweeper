@@ -19,4 +19,8 @@ class Cell
   def detonate
     @mine[:detonated] = true
   end
+
+  def clear
+    @cleared = true
+  end
 end
