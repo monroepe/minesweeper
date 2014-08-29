@@ -17,7 +17,7 @@ class Minefield
     while mine_count > 0
       row = field.sample
       cell = row.sample
-      if cell.mine[:status] == false
+      if cell.mine[:exists] == false
         cell.set_mine
         mine_count -= 1
       end
@@ -40,7 +40,7 @@ class Minefield
 
   # Return true if the cell been uncovered, false otherwise.
   def cell_cleared?(row, col)
-    self.field[row][col].cleared == true
+    @field[row][col].cleared == true
   end
 
   # Uncover the given cell. If there are no adjacent mines to this cell
@@ -59,13 +59,31 @@ class Minefield
   # Check if any cells have been uncovered that also contained a mine. This is
   # the condition used to see if the player has lost the game.
   def any_mines_detonated?
+    @field.each do |row|
+      row.each do |col|
+        if contains_mine?(row, col)
+          if @field[row][col].mine[:detonated] == true
+            return true
+          end
+        end
+      end
+    end
     false
   end
 
   # Check if all cells that don't have mines have been uncovered. This is the
   # condition used to see if the player has won the game.
   def all_cells_cleared?
-    false
+    @field.each do |row|
+      row.each do |col|
+        if !contains_mine?(row, col)
+          if @field[row][col].cleared == false
+            return false
+          end
+        end
+      end
+    end
+    true
   end
 
   # Returns the number of mines that are surrounding this cell (maximum of 8).
@@ -79,7 +97,7 @@ class Minefield
 
   # Returns true if the given cell contains a mine, false otherwise.
   def contains_mine?(row, col)
-    self.field[row][col].mine[:status] == true
+    @field[row][col].mine[:exists] == true
   end
 end
 

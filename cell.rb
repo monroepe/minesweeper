@@ -4,7 +4,7 @@ class Cell
   def initialize(row, col)
     @row = row
     @col = col
-    @mine = {status: false, mine: nil}
+    @mine = {exists: false, detonated: false}
     @cleared = false
   end
 
@@ -13,7 +13,10 @@ class Cell
   end
 
   def set_mine
-    @mine[:status] = true
-    @mine[:mine] = Mine.new
+    @mine[:exists] = true
+  end
+
+  def detonate
+    @mine[:detonated] = true
   end
 end
